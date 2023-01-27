@@ -1,0 +1,176 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 1300px;
+                 height: 700px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"betweenness_centrality": 0.6479166666666667, "closeness_centrality": 1.0, "degree_centrality": 1.0, "font": {"color": "white"}, "group": 1, "id": "Alice", "label": "Alice", "shape": "dot", "size": 16}, {"betweenness_centrality": 0.0125, "closeness_centrality": 0.5925925925925926, "degree_centrality": 0.3125, "font": {"color": "white"}, "group": 2, "id": "Rabbit", "label": "Rabbit", "shape": "dot", "size": 5}, {"betweenness_centrality": 0.004166666666666667, "closeness_centrality": 0.5517241379310345, "degree_centrality": 0.1875, "font": {"color": "white"}, "group": 1, "id": "Duchess", "label": "Duchess", "shape": "dot", "size": 3}, {"betweenness_centrality": 0.01111111111111111, "closeness_centrality": 0.5714285714285714, "degree_centrality": 0.25, "font": {"color": "white"}, "group": 1, "id": "Mouse", "label": "Mouse", "shape": "dot", "size": 4}, {"betweenness_centrality": 0.0027777777777777775, "closeness_centrality": 0.5517241379310345, "degree_centrality": 0.1875, "font": {"color": "white"}, "group": 1, "id": "Lory", "label": "Lory", "shape": "dot", "size": 3}, {"betweenness_centrality": 0.0027777777777777775, "closeness_centrality": 0.5517241379310345, "degree_centrality": 0.1875, "font": {"color": "white"}, "group": 1, "id": "Eaglet", "label": "Eaglet", "shape": "dot", "size": 3}, {"betweenness_centrality": 0.0027777777777777775, "closeness_centrality": 0.5517241379310345, "degree_centrality": 0.1875, "font": {"color": "white"}, "group": 1, "id": "Dodo", "label": "Dodo", "shape": "dot", "size": 3}, {"betweenness_centrality": 0.0, "closeness_centrality": 0.5333333333333333, "degree_centrality": 0.125, "font": {"color": "white"}, "group": 2, "id": "Pat", "label": "Pat", "shape": "dot", "size": 2}, {"betweenness_centrality": 0.0, "closeness_centrality": 0.5517241379310345, "degree_centrality": 0.1875, "font": {"color": "white"}, "group": 0, "id": "Bill", "label": "Bill", "shape": "dot", "size": 3}, {"betweenness_centrality": 0.0, "closeness_centrality": 0.5161290322580645, "degree_centrality": 0.0625, "font": {"color": "white"}, "group": 1, "id": "Caterpillar", "label": "Caterpillar", "shape": "dot", "size": 1}, {"betweenness_centrality": 0.10902777777777777, "closeness_centrality": 0.7272727272727273, "degree_centrality": 0.625, "font": {"color": "white"}, "group": 0, "id": "Queen", "label": "Queen", "shape": "dot", "size": 10}, {"betweenness_centrality": 0.0, "closeness_centrality": 0.5333333333333333, "degree_centrality": 0.125, "font": {"color": "white"}, "group": 1, "id": "Cat", "label": "Cat", "shape": "dot", "size": 2}, {"betweenness_centrality": 0.0020833333333333333, "closeness_centrality": 0.5925925925925926, "degree_centrality": 0.3125, "font": {"color": "white"}, "group": 0, "id": "Hatter", "label": "Hatter", "shape": "dot", "size": 5}, {"betweenness_centrality": 0.0, "closeness_centrality": 0.5714285714285714, "degree_centrality": 0.25, "font": {"color": "white"}, "group": 0, "id": "Dormouse", "label": "Dormouse", "shape": "dot", "size": 4}, {"betweenness_centrality": 0.021527777777777774, "closeness_centrality": 0.64, "degree_centrality": 0.4375, "font": {"color": "white"}, "group": 0, "id": "King", "label": "King", "shape": "dot", "size": 7}, {"betweenness_centrality": 0.0, "closeness_centrality": 0.5333333333333333, "degree_centrality": 0.125, "font": {"color": "white"}, "group": 0, "id": "Gryphon", "label": "Gryphon", "shape": "dot", "size": 2}, {"betweenness_centrality": 0.0, "closeness_centrality": 0.5517241379310345, "degree_centrality": 0.1875, "font": {"color": "white"}, "group": 0, "id": "Knave", "label": "Knave", "shape": "dot", "size": 3}]);
+                  edges = new vis.DataSet([{"from": "Alice", "to": "Rabbit", "value": 74, "width": 1}, {"from": "Alice", "to": "Duchess", "value": 166, "width": 1}, {"from": "Alice", "to": "Mouse", "value": 132, "width": 1}, {"from": "Alice", "to": "Lory", "value": 27, "width": 1}, {"from": "Alice", "to": "Eaglet", "value": 2, "width": 1}, {"from": "Alice", "to": "Dodo", "value": 39, "width": 1}, {"from": "Alice", "to": "Pat", "value": 3, "width": 1}, {"from": "Alice", "to": "Bill", "value": 22, "width": 1}, {"from": "Alice", "to": "Caterpillar", "value": 144, "width": 1}, {"from": "Alice", "to": "Queen", "value": 192, "width": 1}, {"from": "Alice", "to": "Cat", "value": 66, "width": 1}, {"from": "Alice", "to": "Hatter", "value": 130, "width": 1}, {"from": "Alice", "to": "Dormouse", "value": 136, "width": 1}, {"from": "Alice", "to": "King", "value": 27, "width": 1}, {"from": "Alice", "to": "Gryphon", "value": 200, "width": 1}, {"from": "Alice", "to": "Knave", "value": 18, "width": 1}, {"from": "Rabbit", "to": "Pat", "value": 11, "width": 1}, {"from": "Rabbit", "to": "Queen", "value": 5, "width": 1}, {"from": "Rabbit", "to": "King", "value": 6, "width": 1}, {"from": "Rabbit", "to": "Hatter", "value": 5, "width": 1}, {"from": "Duchess", "to": "Mouse", "value": 5, "width": 1}, {"from": "Duchess", "to": "Queen", "value": 20, "width": 1}, {"from": "Mouse", "to": "Lory", "value": 19, "width": 1}, {"from": "Mouse", "to": "Dodo", "value": 2, "width": 1}, {"from": "Lory", "to": "Eaglet", "value": 6, "width": 1}, {"from": "Eaglet", "to": "Dodo", "value": 10, "width": 1}, {"from": "Bill", "to": "King", "value": 10, "width": 1}, {"from": "Bill", "to": "Queen", "value": 5, "width": 1}, {"from": "Queen", "to": "Knave", "value": 11, "width": 1}, {"from": "Queen", "to": "Cat", "value": 5, "width": 1}, {"from": "Queen", "to": "Gryphon", "value": 10, "width": 1}, {"from": "Queen", "to": "Hatter", "value": 41, "width": 1}, {"from": "Queen", "to": "King", "value": 16, "width": 1}, {"from": "Queen", "to": "Dormouse", "value": 14, "width": 1}, {"from": "Hatter", "to": "Dormouse", "value": 108, "width": 1}, {"from": "Hatter", "to": "King", "value": 22, "width": 1}, {"from": "Dormouse", "to": "King", "value": 11, "width": 1}, {"from": "Knave", "to": "King", "value": 4, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": true
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.2,
+            "damping": 0.09,
+            "nodeDistance": 100,
+            "springConstant": 0.05,
+            "springLength": 200
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
